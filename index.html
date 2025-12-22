@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ViaBrindisi | Rare Philatelic Literature</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Merriweather:wght@300;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <h1 style="font-family: 'Playfair Display', serif; font-style: italic; font-size: 3rem;">ViaBrindisi</h1>
+            <p class="subtitle">The Route to Philatelic Knowledge</p>
+            <p style="font-size: 0.8rem; opacity: 0.8; margin-top: 5px; letter-spacing: 1px;">EST. 1984 • INDIA</p>
+        </div>
+    </header>
+
+    <div class="controls container">
+        <input type="text" id="searchInput" placeholder="Search by Title, Author, or Region...">
+        <select id="categoryFilter">
+            <option value="All">All Categories</option>
+        </select>
+    </div>
+
+    <main class="container">
+        <div id="bookGrid" class="grid">
+            <div class="loading">Loading the Archive...</div>
+        </div>
+    </main>
+
+    <footer style="text-align: center; padding: 20px;">
+        <p>&copy; 2025 ViaBrindisi. Philatelic Knowledge Preserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
