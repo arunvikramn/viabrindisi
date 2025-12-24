@@ -1,0 +1,71 @@
+var SHEET_NAME = "Orders";
+var MERCHANT_EMAIL = "a331005@gmail.com"; 
+
+function doPost(e) {
+  var lock = LockService.getScriptLock();
+  lock.tryLock(10000);
+
+  try {
+    var doc = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = doc.getSheetByName(SHEET_NAME);
+    
+    var data = JSON.parse(e.postData.contents);
+    var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+    var nextRow = sheet.getLastRow() + 1;
+
+    var newRow = headers.map(function(header) {
+      if (header === "Timestamp") return new Date();
+      return data[header] || ""; 
+    });
+
+    sheet.getRange(nextRow, 1, 1, newRow.length).setValues([newRow]);
+
+    // Send Professional Emails [cite: 12, 17]
+    sendProfessionalEmails(data);
+
+    return ContentService
+      .createTextOutput(JSON.stringify({ "result": "success", "row": nextRow }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+  catch (err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ "result": "error", "error": err.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+  finally {
+    lock.releaseLock();
+  }
+}
+
+function sendProfessionalEmails(data) {
+  var isInternational = (data.PaymentMethod === "Wise");
+  
+  // A. Email to Merchant (You) [cite: 9, 10]
+  var adminSubject = "📦 New Order: " + data.OrderID + " (" + (isInternational ? "International" : "Domestic") + ")";
+  var adminBody = "A new order has been placed. Please prepare the items.\n\n" +
+                  "Customer: " + data.Name + "\n" +
+                  "Items: " + data.Items + "\n" +
+                  "Total: ₹" + data.TotalAmount + "\n" +
+                  "Address: " + data.Address + "\n\n" +
+                  "Instructions: " + (isInternational ? "CALCULATE POSTAGE and email the Wise invoice." : "Verify UPI payment and pack.");
+  
+  MailApp.sendEmail("your-actual-email@gmail.com", adminSubject, adminBody);
+
+  // B. Email to Customer [cite: 13, 14]
+  var clientSubject = "Order Confirmation: " + data.OrderID + " - Philately Collection";
+  var clientBody = "Dear " + data.Name + ",\n\n" +
+                   "Thank you for your interest in The Philately Collection. We have received your order for: " + data.Items + ".\n\n";
+
+  if (isInternational) {
+    clientBody += "As an international collector, we will now calculate the exact postage charges for your shipping address. " +
+                  "Once calculated, we will send a follow-up email with a Wise payment link to finalize your order.\n\n";
+  } else {
+    clientBody += "Please ensure payment of ₹" + data.TotalAmount + " is completed via UPI (9447447007@upi). " +
+                  "If you have already completed the transaction via the checkout link, please ignore this request.\n\n";
+  }
+
+  clientBody += "Once payment is confirmed, we will provide your tracking number within 2 working days.\n\n" +
+                "Warm regards,\nThe Philately Collection Team";
+
+  MailApp.sendEmail(data.Email, clientSubject, clientBody);
+}

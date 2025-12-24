@@ -18,6 +18,9 @@
             <h1 style="font-family: 'Playfair Display', serif; font-style: italic; font-size: 3rem;">ViaBrindisi</h1>
             <p class="subtitle">The Route to Philatelic Knowledge</p>
             <p style="font-size: 0.8rem; opacity: 0.8; margin-top: 5px; letter-spacing: 1px;">EST. 1984 • INDIA</p>
+            <div id="cartButton" style="position:absolute; right:30px; top:28px;">
+                <button id="openCart" title="Open cart" style="background:var(--accent-gold); border:none; padding:10px 14px; border-radius:6px; cursor:pointer; font-weight:bold;">Cart (<span id="cartCount">0</span>)</button>
+            </div>
         </div>
     </header>
 
@@ -39,5 +42,30 @@
     </footer>
 
     <script src="script.js"></script>
+    <!-- Cart / Checkout Modal -->
+    <div id="cartModal" class="cart-modal" aria-hidden="true">
+        <div class="cart-modal-content">
+            <button id="closeCart" class="cart-close">✕</button>
+            <h2>Your Cart</h2>
+            <div id="cartItems" class="cart-items"></div>
+            <div class="cart-summary">
+                <div>Total: <span id="cartTotal">₹0</span></div>
+                <button id="checkoutBtn" class="primary">Checkout</button>
+            </div>
+            <div id="checkoutForm" class="checkout-form" style="display:none;">
+                <h3>Checkout</h3>
+                <label>Name<input id="buyerName" placeholder="Full name"></label>
+                <label>Email<input id="buyerEmail" placeholder="Email"></label>
+                <label>Country<select id="buyerCountry"><option>India</option><option>Other</option></select></label>
+                <label>Address<textarea id="buyerAddress" rows="3" placeholder="Shipping address"></textarea></label>
+                <div id="paymentArea"></div>
+                <div style="margin-top:10px; display:flex; gap:8px;">
+                    <button id="placeOrderBtn" class="primary">Place Order</button>
+                    <button id="cancelCheckout">Cancel</button>
+                </div>
+                <div id="checkoutMsg" style="margin-top:10px;font-size:0.9rem;color:#333;"></div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
